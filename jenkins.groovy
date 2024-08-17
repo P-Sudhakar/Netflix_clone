@@ -38,6 +38,21 @@ pipeline {
                 sh "docker run -itd --name Netflix -p 8081:80 sudhakarp1703/netflix:latest"
             }               
         }
+          stage ('create kube pod Netflix App') {
+            steps {
+                sh "kubectl apply -f deloyment.yml"
+            }               
+        }
+        stage ('create kube pod node port') {
+            steps {
+                sh "kubectl apply -f nerflix_NodePort.yml"
+            }               
+        }
+        stage ('create kube pod loadbalancer') {
+            steps {
+                sh "kubectl apply -f netflix_load.yml"
+            }               
+        }
     }  
 }
 
