@@ -11,95 +11,100 @@ This is the core code from scratch to clone the landing page of Netflix using **
 ![image](https://user-images.githubusercontent.com/79099734/156505809-309a6824-5d85-4cc0-9ffd-95d66fb2cf5e.png)
 
 
-## Watch the Live [Demo](https://susmita-dey.github.io/Netflix-Clone/)
+# Deploy Netflix Clone on Cloud using Jenkins - DevSecOps Project!
+
+### **Phase 1: Initial Setup and Deployment**
+
+**Step 1: Launch EC2 (Ubuntu 22.04):**
+
+- Provision an EC2 instance on AWS with Ubuntu 22.04.
+- Connect to the instance using SSH.
+
+**Step 2: Clone the Code:**
+
+- Update all the packages and then clone the code.
+- Clone your application's code repository onto the EC2 instance:
+    
+    ```bash
+    git clone https://github.com/P-Sudhakar/Netflix_Clone
+    ```
+
+ **Step 3: Install Docker and Run the App Using a Container:**
+
+- Set up Docker on the EC2 instance:
+    
+    ```bash
+    
+    sudo apt-get update
+    sudo apt-get install docker.io -y
+    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
+    newgrp docker
+    sudo chmod 777 /var/run/docker.sock
+    ```
+    
+- Build and run your application using Docker containers:
+    
+    ```bash
+    docker build -t netflix .
+    docker run -d --name netflix -p 8081:80 netflix:latest
+    
+    #to delete
+    docker stop <containerid>
+    docker rmi -f netflix
+    ```
+ **Step 4: CI/CD Setup**
+
+1. **Install Jenkins for Automation:**
+    - Install Jenkins on the EC2 instance to automate deployment:
+    Install Java
+    
+    ```bash
+    sudo apt update
+    sudo apt install fontconfig openjdk-17-jre
+    java -version
+    openjdk version "17.0.8" 2023-07-18
+    OpenJDK Runtime Environment (build 17.0.8+7-Debian-1deb12u1)
+    OpenJDK 64-Bit Server VM (build 17.0.8+7-Debian-1deb12u1, mixed mode, sharing)
+    
+    #jenkins
+    sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+    https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install jenkins
+    sudo systemctl start jenkins
+    sudo systemctl enable jenkins
+    ```
+    
+    - Access Jenkins in a web browser using the public IP of your EC2 instance.
+        
+        publicIp:8080
+**Install Docker Tools and Docker Plugins:**
+
+- Go to "Dashboard" in your Jenkins web interface.
+- Navigate to "Manage Jenkins" → "Manage Plugins."
+- Click on the "Available" tab and search for "Docker."
+- Check the following Docker-related plugins:
+  - Docker
+  - Docker Commons
+  - Docker Pipeline
+  - Docker API
+  - docker-build-step
+- Click on the "Install without restart" button to install these plugins.
+
+**Add DockerHub Credentials:**
+
+- To securely handle DockerHub credentials in your Jenkins pipeline, follow these steps:
+  - Go to "Dashboard" → "Manage Jenkins" → "Manage Credentials."
+  - Click on "System" and then "Global credentials (unrestricted)."
+  - Click on "Add Credentials" on the left side.
+  - Choose "Secret text" as the kind of credentials.
+  - Enter your DockerHub credentials (Username and Password) and give the credentials an ID (e.g., "docker").
+  - Click "OK" to save your DockerHub credentials.
+
+Now, you have installed the Dependency-Check plugin, configured the tool, and added Docker-related plugins along with your DockerHub credentials in Jenkins. You can now proceed with configuring your Jenkins pipeline to include these tools and credentials in your CI/CD process.
 
 
-## [Watch the video tutorial here](https://youtu.be/wpH0VR0hYTU)
-
-
-# 💥 How to Contribute
-
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/Susmita-Dey/Netflix-Clone/pulls)
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
-
-- Take a look at the existing [Issues](https://github.com/Susmita-Dey/Netflix-Clone-With-HTML-CSS-JS/issues) or [create a new issue](https://github.com/Susmita-Dey/Netflix-Clone/issues/new/choose)!
-- [Fork the Repo](https://github.com/Susmita-Dey/Netflix-Clone/fork), create a branch for any issue that you are working on and commit your work.
-- Create a **[Pull Request](https://github.com/Susmita-Dey/Netflix-Clone/compare)** (_PR_), which will be promptly reviewed and given suggestions for improvements by the community.
-- Add screenshots or screen captures to your Pull Request to help us understand the effects of the changes that are included in your commits.
-
-## ⭐ HOW TO MAKE A PULL REQUEST:
-
-**1.** Start by making a fork the [**Netflix-Clone**](https://github.com/Susmita-Dey/Netflix-Clone) repository. Click on the <a href="https://github.com/Susmita-Dey/Netflix-Clone/fork"><img src="https://i.imgur.com/G4z1kEe.png" height="21" width="21"></a> symbol at the top right corner.
-
-**2.** Clone your new fork of the repository:
-
-```bash
-git clone https://github.com/<your-github-username>/Netflix-Clone
-```
-
-**3.** Set upstream command:
-
-```bash
-git remote add upstream https://github.com/Susmita-Dey/Netflix-Clone.git
-```
-
-**4.** Navigate to the new project directory:
-
-```bash
-cd Netflix-Clone
-```
-
-**5.** Create a new branch:
-
-```bash
-git checkout -b YourBranchName
-```
-
-**6.** Sync your fork or local repository with the origin repository:
-
-- In your forked repository click on "Fetch upstream"
-- Click "Fetch and merge".
-
-### Alternatively, Git CLI way to Sync forked repository with origin repository:
-
-```bash
-git fetch upstream
-```
-
-```bash
-git merge upstream/main
-```
-
-### [Github Docs](https://docs.github.com/en/github/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github) for Syncing
-
-**7.** Make your changes to the source code.
-
-**8.** Stage your changes and commit:
-
-```bash
-git add .
-```
-
-```bash
-git commit -m "<your_commit_message>"
-```
-
-**9.** Push your local commits to the remote repository:
-
-```bash
-git push origin YourBranchName
-```
-
-**10.** Create a [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)!
-
-**11.** **Congratulations!** You've made your first contribution! 🙌🏼
-
-
-
-## All the best! 🥇
-
-<p align="center">
-
-[![built with love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Susmita-Dey/Netflix-Clone)
-
-</p>
+    
