@@ -106,5 +106,142 @@ This is the core code from scratch to clone the landing page of Netflix using **
 
 Now, you have installed the Dependency-Check plugin, configured the tool, and added Docker-related plugins along with your DockerHub credentials in Jenkins. You can now proceed with configuring your Jenkins pipeline to include these tools and credentials in your CI/CD process.
 
+```groovy
 
-    
+pipeline {
+    agent any
+    stages {
+        stage('Checkout from Git') {
+            steps {
+                git 'https://github.com/P-Sudhakar/Netflix_clone'
+            }
+        }
+        stage ('Build a Docker File') {
+            steps {
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker build -t netflix ."
+                    }
+                }
+            }
+        } 
+        stage ('Tag A DockerImage') {
+            steps {
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker tag netflix sudhakarp1703/netflix:latest "
+                   }      
+                }               
+            }
+        }   
+         stage ('Push DockerImage to the DockerHub') {
+            steps {
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker push sudhakarp1703/netflix:latest "
+                   }      
+                }               
+            }
+        }  
+         stage ('Build a Container') {
+            steps {
+                sh "docker run -itd --name Netflix -p 8081:80 sudhakarp1703/netflix:latest"
+            }               
+        }
+    }
+}
+
+
+If you get docker login failed errorr
+
+sudo su
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+```
+
+**Step 5: Kubernetes Cluster setup in AWS Environment.
+
+*Prerequisites:
+AWS Account: Ensure you have an AWS account.
+AWS CLI: Install and configure the AWS CLI.
+Install: 
+```bash
+    pip install awscli
+```
+Configure: 
+```bash
+    aws configure
+```
+kubectl: Install kubectl to interact with the Kubernetes cluster.
+Install: 
+```bash
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+```
+Make it executable: 
+```bash
+    chmod +x ./kubectl
+```
+Move to PATH: 
+```bash
+    sudo mv ./kubectl /usr/local/bin/kubectl
+```
+
+*Step 1: Create an IAM Role for Worker Nodes
+Go to the IAM Console:
+
+Open the IAM Console.
+Click on Roles and then Create role.
+Create the Role:
+
+Choose EC2 as the trusted entity.
+Attach the following policies:
+AmazonEKSWorkerNodePolicy
+AmazonEC2ContainerRegistryReadOnly
+AmazonEKS_CNI_Policy
+Name the role (e.g., eksWorkerNodeRole).
+Click Create role.
+
+*Step 2: Create an EKS Cluster (If Not Done Already)
+Open the EKS Console:
+Go to the EKS Console.
+Click on Add Cluster and then Create.
+Follow the prompts to set up the cluster, using the default settings where appropriate.
+Step 3: Add a Managed Node Group
+Navigate to Your Cluster:
+
+In the EKS Console, select your cluster.
+Click on the Compute tab.
+Add a Node Group:
+
+Click on Add Node Group.
+Configure the Node Group:
+
+Name: Enter a name for your node group (e.g., my-node-group).
+Node IAM Role: Select the IAM role (eksWorkerNodeRole) you created.
+AMI Type: Leave as default (Amazon EKS-optimized Amazon Linux 2 AMI).
+Instance Types: Choose the default instance type or select a specific type (e.g., t3.medium).
+Scaling Configuration:
+Set the minimum, desired, and maximum number of nodes (e.g., min: 1, desired: 2, max: 3).
+Subnets: Select the subnets where the worker nodes will be deployed.
+Remote Access: Optionally, select a key pair for SSH access to the nodes (optional).
+Review and Create:
+
+Review your settings.
+Click Create to create the node group.
+
+
+*Step 4: Update kubectl Configuration
+To interact with your EKS cluster using kubectl, update your kubeconfig file:
+```bash
+    aws eks --region us-west-2 update-kubeconfig --name my-cluster
+```
+
+*Step 5: Verify Node Group
+Check Node Status:
+After the node group is created, the worker nodes should automatically join the cluster.
+Run the following command to verify:
+
+```bash
+    kubectl get nodes
+```
