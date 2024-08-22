@@ -160,86 +160,129 @@ sudo systemctl restart jenkins
 
 ```
 
-**Step 5: Kubernetes Cluster setup in AWS Environment.
+**Step 5: Kubernetes Cluster setup in AWS Environment.**
 
-*Prerequisites:
+**Prerequisites:**
+
 AWS Account: Ensure you have an AWS account.
+
 AWS CLI: Install and configure the AWS CLI.
+
 Install: 
+
 ```bash
     pip install awscli
 ```
 Configure: 
+
 ```bash
     aws configure
 ```
+
 kubectl: Install kubectl to interact with the Kubernetes cluster.
+
 Install: 
+
 ```bash
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 ```
+
 Make it executable: 
+
 ```bash
     chmod +x ./kubectl
 ```
 Move to PATH: 
+
 ```bash
     sudo mv ./kubectl /usr/local/bin/kubectl
 ```
 
-*Step 1: Create an IAM Role for Worker Nodes
+**Step 1: Create an IAM Role for Worker Nodes**
+
 Go to the IAM Console:
 
 Open the IAM Console.
+
 Click on Roles and then Create role.
+
 Create the Role:
 
 Choose EC2 as the trusted entity.
+
 Attach the following policies:
+
 AmazonEKSWorkerNodePolicy
+
 AmazonEC2ContainerRegistryReadOnly
+
 AmazonEKS_CNI_Policy
+
 Name the role (e.g., eksWorkerNodeRole).
+
 Click Create role.
 
-*Step 2: Create an EKS Cluster (If Not Done Already)
+**Step 2: Create an EKS Cluster (If Not Done Already)**
+
 Open the EKS Console:
+
 Go to the EKS Console.
+
 Click on Add Cluster and then Create.
+
 Follow the prompts to set up the cluster, using the default settings where appropriate.
-Step 3: Add a Managed Node Group
+
+**Step 3: Add a Managed Node Group**
+
 Navigate to Your Cluster:
 
 In the EKS Console, select your cluster.
+
 Click on the Compute tab.
+
 Add a Node Group:
 
 Click on Add Node Group.
+
 Configure the Node Group:
 
 Name: Enter a name for your node group (e.g., my-node-group).
+
 Node IAM Role: Select the IAM role (eksWorkerNodeRole) you created.
+
 AMI Type: Leave as default (Amazon EKS-optimized Amazon Linux 2 AMI).
+
 Instance Types: Choose the default instance type or select a specific type (e.g., t3.medium).
+
 Scaling Configuration:
+
 Set the minimum, desired, and maximum number of nodes (e.g., min: 1, desired: 2, max: 3).
+
 Subnets: Select the subnets where the worker nodes will be deployed.
+
 Remote Access: Optionally, select a key pair for SSH access to the nodes (optional).
+
 Review and Create:
 
-Review your settings.
+eview your settings.
+
 Click Create to create the node group.
 
 
-*Step 4: Update kubectl Configuration
+**Step 4: Update kubectl Configuration**
+
 To interact with your EKS cluster using kubectl, update your kubeconfig file:
+
 ```bash
     aws eks --region us-west-2 update-kubeconfig --name my-cluster
 ```
 
-*Step 5: Verify Node Group
+**Step 5: Verify Node Group**
+
 Check Node Status:
+
 After the node group is created, the worker nodes should automatically join the cluster.
+
 Run the following command to verify:
 
 ```bash
