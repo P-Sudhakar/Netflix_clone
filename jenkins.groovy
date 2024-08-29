@@ -40,7 +40,7 @@ pipeline {
         }
           stage ('create kube pod Netflix App') {
             steps {
-                sh "kubectl apply -f deloyment.yml"
+                sh "kubectl apply -f deployment.yml"
             }               
         }
         stage ('create kube pod node port') {
