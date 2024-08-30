@@ -45,7 +45,7 @@ pipeline {
         }
         stage ('create kube pod node port') {
             steps {
-                sh "kubectl apply -f nerflix_NodePort.yml"
+                sh "kubectl apply -f netflix_NodePort.yml"
             }               
         }
         stage ('create kube pod loadbalancer') {
