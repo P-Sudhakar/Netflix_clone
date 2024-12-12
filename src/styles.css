@@ -125,7 +125,8 @@ body {
   position: absolute;
   top: 28%;
   left: 2%;
-  color: rgb(153, 149, 149);
+  color: pink;
+  background: orange
   transition: 0.5s;
 }
 
