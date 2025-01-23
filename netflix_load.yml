@@ -1,25 +1,14 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: nginx-ingress
-  annotations:
-    # Required annotations for AWS ALB
-    kubernetes.io/ingress.class: "alb" # Ensure the ALB Ingress Controller is configured
-    alb.ingress.kubernetes.io/scheme: internet-facing # Set to "internal" for private ALB
-    alb.ingress.kubernetes.io/target-type: ip # Use "instance" for EC2-based targets
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]' # Specify ALB listener ports
-    alb.ingress.kubernetes.io/group.name: "nginx-group" # Optional: Group multiple Ingress resources
+  name: my-loadbalancer-service
   labels:
     app: netflix-app
 spec:
-  rules:
-  - host: api.suman.cloud # Replace with your domain name
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx-service
-            port:
-              number: 80
+  type: LoadBalancer
+  selector:
+    app: netflix-app
+  ports:
+    - protocol: TCP
+      port: 80        # The port exposed by the service
+      targetPort: 8080 # The port your application listens to inside the pods
