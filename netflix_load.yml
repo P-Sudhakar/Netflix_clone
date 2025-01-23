@@ -11,4 +11,4 @@ spec:
   ports:
     - protocol: TCP
       port: 80        # The port exposed by the service
-      targetPort: 8080 # The port your application listens to inside the pods
+      targetPort: 80 # The port your application listens to inside the pods
