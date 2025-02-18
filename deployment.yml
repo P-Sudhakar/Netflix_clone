@@ -37,7 +37,7 @@ spec:
           readOnlyRootFilesystem: true
         resources:
           requests:
-            cpu: "250m"
+            cpu: "500m"    # Increased to match the limit
             memory: "256Mi"
           limits:
             cpu: "500m"
