@@ -14,31 +14,8 @@ spec:
       labels:
         app: netflix-app
     spec:
-      tolerations:
-      - key: "virtual-kubelet.io/provider"
-        operator: "Equal"
-        value: "azure"
-        effect: "NoSchedule"
       containers:
       - name: netflix-app
-        image: sudhakarp1703/netflix:1
+        image: sudhakarp1703/netflix:latest
         ports:
-        - containerPort: 8080
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
-          runAsNonRoot: true
-          runAsUser: 10001
-          runAsGroup: 10001
-          seccompProfile:
-            type: RuntimeDefault
-          readOnlyRootFilesystem: true
-        resources:
-          requests:
-            cpu: "500m"    # Increased to match the limit
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
+        - containerPort: 80
